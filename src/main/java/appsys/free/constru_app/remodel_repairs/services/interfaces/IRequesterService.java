@@ -14,7 +14,7 @@ public interface IRequesterService {
 
     boolean addRequester(HttpServletResponse reponse, Requester_Dto requesterDto);
 
-    List<SeeRequester_dto> getRequests();
+    List<SeeRequester_dto> getRequests(int idStatus);
 
     boolean deleteRequest(int idRequest);
 

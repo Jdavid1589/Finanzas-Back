@@ -167,9 +167,9 @@ public class RequesterImplService implements IRequesterService {
     }
 
     @Override
-    public List<SeeRequester_dto> getRequests() {
+    public List<SeeRequester_dto> getRequests(int idStatus) {
         //List<SeeRequester_dto> inactivos = getRequestsByStatus(2);
-        return getRequestsByStatus(2);
+        return getRequestsByStatus(idStatus);
        // List<SeeRequester_dto> resp = new ArrayList<>(inactivos);
         //resp.addAll(activos);
 
@@ -465,12 +465,16 @@ public class RequesterImplService implements IRequesterService {
     public List<SeeRequester_dto> getRequestsByStatus(int idStatus) {
         SimpleDateFormat formatFecha = new SimpleDateFormat("yyyy/MM/dd");
         List<SeeRequester_dto> seeRequestsDtos = new ArrayList<>();
-        List<Requester> inactiveRequests = iRequesterRepo.findByStatusRequ(new StatusRequ(idStatus)).orElse(null);
-        if (!inactiveRequests.isEmpty()) {
-            if (inactiveRequests.size() > 0) {
-                for (Requester requester : inactiveRequests) {
+        List<Requester> requesters = iRequesterRepo.findByStatusRequ(new StatusRequ(idStatus)).orElse(null);
+        if (!requesters.isEmpty()) {
+            if (requesters.size() > 0) {
+                for (Requester requester : requesters) {
                     SeeRequester_dto seeRequesterDto = new SeeRequester_dto(requester.getId(), formatFecha.format(requester.getDateInit()), requester.getCustomer().getNames(),requester.getCustomer().getSurnames(), requester.getCustomer().getDocumentNumber(), requester.getCustomer().getPhoneNumber(), requester.getCustomer().getMunicipality().getName(), requester.getCustomer().getAddress(), requester.getTotalWork(), requester.getTotalEquipment(), requester.getTotalMater(), requester.getTotalTransport(), requester.getTotalValueRequest());
                     seeRequesterDto.setDateLimit(requester.getDateLimit().toString());
+                    if(requester.getDateStartRequest()!=null){
+                        seeRequesterDto.setDateStartRequest(requester.getDateStartRequest().toString());
+                    }
+
                     List<Work> works = iWorkRepo.findByRequester(requester);
                     List<Work_Dto> worksDto = new ArrayList<>();
                     if (works.size() > 0) {

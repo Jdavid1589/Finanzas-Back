@@ -15,6 +15,7 @@ public class SeeRequester_dto {
     private int id;
     private String date;
     private String dateLimit;
+    private String dateStartRequest;
     private String names;
     private String surNames;
     private String noDocument;

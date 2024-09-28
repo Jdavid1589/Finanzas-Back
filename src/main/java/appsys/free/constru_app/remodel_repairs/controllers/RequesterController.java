@@ -49,11 +49,11 @@ public class RequesterController {
     }
 
     @Secured("ROLE_ADMIN")
-    @GetMapping("seeReq")
-    public ResponseEntity<?> seeRequests() {
+    @GetMapping("seeReq/{idStatus}")
+    public ResponseEntity<?> seeRequests(@PathVariable int idStatus) {
         try {
 
-            return new ResponseEntity<List<SeeRequester_dto>>(iRequesterService.getRequests(),HttpStatus.OK);
+            return new ResponseEntity<List<SeeRequester_dto>>(iRequesterService.getRequests(idStatus),HttpStatus.OK);
         }catch (Exception e){
             boolean resp= false;
             logger.error("ERROR RequesterController.seeRequests "+e.getMessage());
