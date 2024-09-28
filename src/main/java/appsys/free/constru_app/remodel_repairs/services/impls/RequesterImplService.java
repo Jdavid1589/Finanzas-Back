@@ -344,6 +344,7 @@ public class RequesterImplService implements IRequesterService {
         Optional<Requester> requester=iRequesterRepo.findById(idRequester);
         if(requester.isPresent()){
             requester.get().setStatusRequ(new StatusRequ(1));
+            requester.get().setDateStartRequest(new Date());
             iRequesterRepo.save(requester.get());
             return true;
         }
@@ -409,8 +410,8 @@ public class RequesterImplService implements IRequesterService {
             requesterDto.setSurnames(requester.get().getCustomer().getSurnames());
             requesterDto.setPhoneNumber(requester.get().getCustomer().getPhoneNumber());
             requesterDto.setAddress(requester.get().getAddress());
-            requesterDto.setDepartament(requester.get().getMunicipality().getDepartament().getId());
-            requesterDto.setMunicipalityObj(requester.get().getMunicipality());
+            requesterDto.setDepartament(requester.get().getCustomer().getMunicipality().getDepartament().getId());
+            requesterDto.setMunicipalityObj(requester.get().getCustomer().getMunicipality());
             requesterDto.setEmail(requester.get().getCustomer().getEmail());
             requesterDto.setDateLimit(requester.get().getDateLimit().toString());
             return requesterDto;
@@ -435,8 +436,14 @@ public class RequesterImplService implements IRequesterService {
             requester.get().setAddress(requesterDto.getAddress());
             Optional<Municipality> municipality=iMunicipalityRepo.findById(requesterDto.getMunicipalityObj().getId());
             if(municipality.isPresent()){
-                requester.get().setMunicipality(municipality.get());
-                requesterDto.setMunicipalityObj(requester.get().getMunicipality());
+                Optional<Customer> customer1=iCustomerRepo.findById(requester.get().getCustomer().getId());
+                if(customer1.isPresent()){
+                    customer1.get().setMunicipality(municipality.get());
+                    iCustomerRepo.save(customer1.get());
+                    requesterDto.setMunicipalityObj(customer1.get().getMunicipality());
+                }
+
+
             }
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             try {
@@ -453,6 +460,8 @@ public class RequesterImplService implements IRequesterService {
     }
 
 
+
+
     public List<SeeRequester_dto> getRequestsByStatus(int idStatus) {
         SimpleDateFormat formatFecha = new SimpleDateFormat("yyyy/MM/dd");
         List<SeeRequester_dto> seeRequestsDtos = new ArrayList<>();
@@ -460,7 +469,7 @@ public class RequesterImplService implements IRequesterService {
         if (!inactiveRequests.isEmpty()) {
             if (inactiveRequests.size() > 0) {
                 for (Requester requester : inactiveRequests) {
-                    SeeRequester_dto seeRequesterDto = new SeeRequester_dto(requester.getId(), formatFecha.format(requester.getDateInit()), requester.getCustomer().getNames(),requester.getCustomer().getSurnames(), requester.getCustomer().getDocumentNumber(), requester.getCustomer().getPhoneNumber(), requester.getMunicipality().getName(), requester.getCustomer().getAddress(), requester.getTotalWork(), requester.getTotalEquipment(), requester.getTotalMater(), requester.getTotalTransport(), requester.getTotalValueRequest());
+                    SeeRequester_dto seeRequesterDto = new SeeRequester_dto(requester.getId(), formatFecha.format(requester.getDateInit()), requester.getCustomer().getNames(),requester.getCustomer().getSurnames(), requester.getCustomer().getDocumentNumber(), requester.getCustomer().getPhoneNumber(), requester.getCustomer().getMunicipality().getName(), requester.getCustomer().getAddress(), requester.getTotalWork(), requester.getTotalEquipment(), requester.getTotalMater(), requester.getTotalTransport(), requester.getTotalValueRequest());
                     seeRequesterDto.setDateLimit(requester.getDateLimit().toString());
                     List<Work> works = iWorkRepo.findByRequester(requester);
                     List<Work_Dto> worksDto = new ArrayList<>();

@@ -25,8 +25,7 @@ public class Requester {
     private Customer customer;
     @ManyToOne
     private StatusRequ statusRequ;
-    @ManyToOne
-    private Municipality municipality;
+
     private String address;
     private int totalWork;
     private int totalMater;
@@ -35,6 +34,8 @@ public class Requester {
     private int totalValueRequest;
     @Temporal(TemporalType.DATE)
     private Date dateInit;
+    @Temporal(TemporalType.DATE)
+    private Date dateStartRequest;
 
     public Requester(int id) {
         this.id = id;
