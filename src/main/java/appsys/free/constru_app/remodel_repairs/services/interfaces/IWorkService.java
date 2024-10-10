@@ -12,6 +12,7 @@ public interface IWorkService {
     Long add_updateWork(Work_Dto work);
 
     boolean deleteWorkUpdate(Work_Dto work);
+   // boolean deleteWorkById(Long id);
 
     Long addMaterialWork(Material_dto material);
 
@@ -19,5 +20,6 @@ public interface IWorkService {
 
     boolean updateMateriaL(Material_dto material);
 
+    Work_Dto getWorkById(Long id);
 
 }

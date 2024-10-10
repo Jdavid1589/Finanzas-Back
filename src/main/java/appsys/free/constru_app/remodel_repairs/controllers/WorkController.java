@@ -38,6 +38,26 @@ public class WorkController {
     }
 
     @Secured("ROLE_ADMIN")
+    @GetMapping("work/{id}")
+    public ResponseEntity<?> getWorkById(@PathVariable Long id) {
+        try {
+            // Llamar al servicio para obtener el trabajo por id
+            Work_Dto workDto = iWorkService.getWorkById(id);
+
+            // Si el trabajo no existe, devuelve una respuesta con 404
+            if (workDto == null) {
+                return new ResponseEntity<String>("Trabajo no encontrado", HttpStatus.NOT_FOUND);
+            }
+
+            return new ResponseEntity<Work_Dto>(workDto, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("ERROR WorkController.getWorkById: " + e.getMessage());
+            return new ResponseEntity<String>("Error al obtener el trabajo", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @Secured("ROLE_ADMIN")
     @PostMapping("add_updWork")
     public ResponseEntity<?> add_updateWork(@RequestBody Work_Dto workDto) {
         try {
@@ -55,7 +75,6 @@ public class WorkController {
     @PostMapping("del_updWork")
     public ResponseEntity<?> delete_updateWork(@RequestBody Work_Dto workDto) {
         try {
-
             return new ResponseEntity<Boolean>(iWorkService.deleteWorkUpdate(workDto), HttpStatus.OK);
         }catch (Exception e){
             boolean resp= false;
@@ -64,6 +83,9 @@ public class WorkController {
         }
 
     }
+
+
+
 
     @Secured("ROLE_ADMIN")
     @PostMapping("add_materUpd")

@@ -74,10 +74,13 @@ public class RequesterImplService implements IRequesterService {
             customer.setAddress(requesterDto.getAddress());
             customer.setMunicipality(new Municipality(requesterDto.getIdMunicipality()));
             Customer customerDb = iCustomerRepo.save(customer);
+
             Requester requester = new Requester();
+
             requester.setDateLimit(formatter.parse(requesterDto.getDateLimit()));
             requester.setCustomer(customerDb);
             requester.setStatusRequ(new StatusRequ(2));
+
             Totals totals = getTotalRequest(requesterDto);
             requester.setTotalWork(totals.totalWork);
             requester.setTotalMater(totals.totalMater);
@@ -177,20 +180,70 @@ public class RequesterImplService implements IRequesterService {
         //return resp;
     }
 
-    @Transactional
-    @Override
-    public boolean deleteRequest(int idRequest) {
+
+    //Metodo anterior
+    public boolean deleteRequest_(int idRequest) {
         List<Work> works = iWorkRepo.findByRequester(new Requester(idRequest));
         if (works.size() > 0) {
             for (Work work : works) {
                 iMaterialRepo.deleteByWork(work);
                 iWorkRepo.delete(work);
-
             }
         }
+        List<Transport> transports = iTransportRepo.findByRequester(new Requester(idRequest));
+        if (transports.size() > 0) {
+            for (Transport transport : transports) {
+                iTransportRepo.delete(transport);
+            }
+        }
+
+        List<Equipment> equipments = iEquipmentRepo.findByRequester(new Requester(idRequest));
+        if (equipments.size() > 0) {
+            for (Equipment equipment : equipments) {
+                iEquipmentRepo.delete(equipment);
+            }
+        }
+
         iRequesterRepo.deleteById(idRequest);
         return true;
     }
+
+    /** * Elimina una solicitud y todos los trabajos, materiales, transportes y equipos asociados.*/
+    @Transactional
+    @Override
+    public boolean deleteRequest(int idRequest) {
+        // Crear el objeto Requester solo una vez.
+        Requester requester = new Requester(idRequest);
+
+        // 1. Eliminar todos los trabajos y sus materiales asociados.
+        List<Work> works = iWorkRepo.findByRequester(requester);
+        if (!works.isEmpty()) {
+            // Eliminar todos los materiales asociados a los trabajos.
+            works.forEach(work -> iMaterialRepo.deleteByWork(work));
+
+            // Eliminar todos los trabajos.
+            iWorkRepo.deleteAll(works);
+        }
+        // 2. Eliminar todos los transportes asociados.
+
+        List<Transport> transports = iTransportRepo.findByRequester(requester);
+        if (!transports.isEmpty()) {
+            // Eliminar todos los transportes.
+            iTransportRepo.deleteAll(transports);
+        }
+        // 3. Eliminar todos los equipos asociados.
+
+        List<Equipment> equipments = iEquipmentRepo.findByRequester(requester);
+        if (!equipments.isEmpty()) {
+            // Eliminar todos los equipos.
+            iEquipmentRepo.deleteAll(equipments);
+        }
+        // 4. Finalmente, eliminar la solicitud.
+        iRequesterRepo.deleteById(idRequest);
+
+        return true;
+    }
+
 
     @Override
     public Customer validNoDoc(String noDoc) {
@@ -458,9 +511,6 @@ public class RequesterImplService implements IRequesterService {
 
         return null;
     }
-
-
-
 
     public List<SeeRequester_dto> getRequestsByStatus(int idStatus) {
         SimpleDateFormat formatFecha = new SimpleDateFormat("yyyy/MM/dd");
