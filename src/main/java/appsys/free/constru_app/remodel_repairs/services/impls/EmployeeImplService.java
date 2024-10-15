@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class EmployeeImplService implements IEmployeeService {
@@ -25,5 +26,10 @@ public class EmployeeImplService implements IEmployeeService {
     public Employee addEmployeee(Employee employee) {
         return iEmployeeRepo.save(employee);
 
+    }
+
+    @Override
+    public List<Employee> getEmployees(Boolean enable) {
+        return iEmployeeRepo.findByEnable(enable);
     }
 }

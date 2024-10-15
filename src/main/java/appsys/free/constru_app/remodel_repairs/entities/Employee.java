@@ -23,6 +23,7 @@ public class Employee {
     private String phoneNumber;
     private String address;
     private String email;
+    private boolean enable;
     @ManyToOne
     private Municipality municipality;
 

@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/empl")
 @CrossOrigin(origins = "*")
@@ -30,6 +32,20 @@ public class EmployeeController {
             return  new ResponseEntity<Employee>(iEmployeeService.addEmployeee(employee), HttpStatus.OK);
         }catch (Exception e){
             logger.error("ERROR addEmployee "+e.getMessage());
+            return   new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/listEmp/{enable}")
+    public ResponseEntity<?> getEmployees(@PathVariable boolean enable) {
+        try {
+
+            return  new ResponseEntity<List<Employee>>(iEmployeeService.getEmployees(enable), HttpStatus.OK);
+        }catch (Exception e){
+            logger.error("ERROR getEmployees "+e.getMessage());
             return   new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
