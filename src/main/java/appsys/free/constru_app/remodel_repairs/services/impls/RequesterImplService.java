@@ -374,6 +374,7 @@ public class RequesterImplService implements IRequesterService {
             Optional<Requester> requester=iRequesterRepo.findById(transportUpd.get().getRequester().getId());
             iTransportRepo.save(transportUpd.get());
             iTransportRepo.flush();
+
             if(requester.isPresent()){
                 requester.get().setTotalTransport(0);
                 List<Transport>transports=iTransportRepo.findByRequester(requester.get());

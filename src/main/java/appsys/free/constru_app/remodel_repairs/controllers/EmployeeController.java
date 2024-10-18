@@ -1,7 +1,8 @@
 package appsys.free.constru_app.remodel_repairs.controllers;
 
+import appsys.free.constru_app.remodel_repairs.entities.Customer;
 import appsys.free.constru_app.remodel_repairs.entities.Employee;
-import appsys.free.constru_app.remodel_repairs.services.interfaces.IBackService;
+
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IEmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,6 @@ public class EmployeeController {
     private static final Logger logger=  LoggerFactory.getLogger(EmployeeController.class);
     @Autowired
     IEmployeeService iEmployeeService;
-
 
 
     @Secured("ROLE_ADMIN")
@@ -49,6 +49,34 @@ public class EmployeeController {
             return   new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PostMapping("updEmp")
+    public ResponseEntity<?> updateEmployee(@RequestBody Employee employee) {
+        try {
+
+            return new ResponseEntity<Boolean>(iEmployeeService.updateEmployeee(employee),HttpStatus.OK);
+        }catch (Exception e){
+
+            logger.error("ERROR RequesterController.updateTransport "+e.getMessage());
+            return new ResponseEntity<Boolean>(false,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("validNoDoc/{noDoc}")
+    public ResponseEntity<?> validNoDoc(@PathVariable String noDoc) {
+        try {
+            return new ResponseEntity<Employee>(iEmployeeService.validNoDoc(noDoc), HttpStatus.OK);
+
+        }catch (Exception e){
+            boolean resp= false;
+            logger.error("ERROR RequesterController.validNoDoc "+e.getMessage());
+            return new ResponseEntity<Boolean>(resp,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 

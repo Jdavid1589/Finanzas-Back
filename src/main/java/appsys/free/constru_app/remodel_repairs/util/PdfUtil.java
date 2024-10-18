@@ -52,7 +52,7 @@ public class PdfUtil {
         try {
             //logo
             Paragraph paragraph1 = new Paragraph();
-            Image image = Image.getInstance("C:/distGV/assets/logo2.png");
+            Image image = Image.getInstance("C:/distCA/assets/Logo2.jpg");
             image.scaleAbsolute(90, 70);
             image.setAlignment(Image.ALIGN_LEFT);
             Chunk chunk1 = new Chunk(image, -10, -60);
@@ -85,8 +85,8 @@ public class PdfUtil {
             for (Work_Dto work : requesterDto.getListWorksToBeDone()) {
                 totalMater += work.getMaterialCost();
                 totalWork += work.getLaborCost();
-                String c1[] = {"LABOR A REALIZAR :" + work.getDescription()};
-                doc.add(addFila(getCellsColor(c1, fontBold2, 1), 20, 100));
+                String c1[] = {"LABOR A REALIZAR : " + work.getDescription()};
+                doc.add(addFila(getCellsColor2(c1, fontBold2, 1), 20, 100));
                 String c2[] = {"ITEM No", "MEDIDO EN", "CANTIDAD", "COSTO UNIDAD", "COSTO MANO OBRA", "COSTO MATERIALES", "TOTAL"};
                 doc.add(addFila(getCells(c2, fontBold3, 1), 0, 100));
                 String c3[] = {String.valueOf(indWork), work.getTypeManp(), String.valueOf(work.getNumberManp()), formatoNumero.format(work.getCostManp()), formatoNumero.format(work.getLaborCost()), formatoNumero.format(work.getMaterialCost()), formatoNumero.format(work.getLaborCost() + work.getMaterialCost())};
@@ -111,7 +111,7 @@ public class PdfUtil {
             if (!requesterDto.getListEquipment().isEmpty()) {
                 if (requesterDto.getListEquipment().size() > 0) {
                     String c1[] = {"EQUIPOS REQUERIDOS"};
-                    doc.add(addFila(getCellsColor(c1, fontBold2, 1), 20, 100));
+                    doc.add(addFila(getCellsColor2(c1, fontBold2, 1), 20, 100));
                     String c2[] = {"No", "NOMBRE EQUIPO", "CANT EQUIPOS", "TAR.DIA", "No DIAS", "SUBT.DIA", "TAR.HORA", "No HORAS", "SUBT.HORAS"};
                     doc.add(addFila(getCells(c2, fontBold3, 1), 0, 100));
                     int indEquip = 1;
@@ -127,7 +127,7 @@ public class PdfUtil {
                 if (requesterDto.getListTransport().size() > 0) {
                     int indTrans = 1;
                     String c1[] = {"TRANSPORTE"};
-                    doc.add(addFila(getCellsColor(c1, fontBold2, 1), 20, 100));
+                    doc.add(addFila(getCellsColor2(c1, fontBold2, 1), 20, 100));
                     String c2[] = {"No", "DESCRIPCIÓN", "CANT", "VALOR FLETE", "SUBTOT"};
                     doc.add(addFila(getCells(c2, fontBold3, 1), 0, 100));
                     for (Transport transport : requesterDto.getListTransport()) {
@@ -138,16 +138,21 @@ public class PdfUtil {
                     }
                 }
             }
-            String c1[] = {"TOTAL MANO DE OBRA:", formatoNumero.format(totalWork)};
-            doc.add(addFila(getCellsColor(c1, fontBold2, 1), 20, 50));
-            String c1_1[] = {"TOTAL MATERIALES:", formatoNumero.format(totalMater)};
-            doc.add(addFila(getCellsColor(c1_1, fontBold2, 1), 0, 50));
-            String c2[] = {"TOTAL EQUIPOS:", formatoNumero.format(totalEquip)};
-            doc.add(addFila(getCellsColor(c2, fontBold2, 1), 0, 50));
-            String c3[] = {"TOTAL TRANSPORTE:", formatoNumero.format(totalTransp)};
-            doc.add(addFila(getCellsColor(c3, fontBold2, 1), 0, 50));
-            String c4[] = {"TOTAL COTIZACIÓN:", formatoNumero.format(totalTransp + totalEquip + totalWork+totalMater)};
-            doc.add(addFila(getCellsColor(c4, fontBold2, 1), 0, 50));
+            String c1[] = {"TOTAL MANO DE OBRA:", "$" + formatoNumero.format(totalWork)};
+            doc.add(addFila(getCellsColor3(c1, fontBold2, 1), 20, 50));
+
+            String c1_1[] = {"TOTAL MATERIALES:", "$" + formatoNumero.format(totalMater)};
+            doc.add(addFila(getCellsColor3(c1_1, fontBold2, 1), 0, 50));
+
+            String c2[] = {"TOTAL EQUIPOS:", "$" + formatoNumero.format(totalEquip)};
+            doc.add(addFila(getCellsColor3(c2, fontBold2, 1), 0, 50));
+
+            String c3[] = {"TOTAL TRANSPORTE:", "$" + formatoNumero.format(totalTransp)};
+            doc.add(addFila(getCellsColor3(c3, fontBold2, 1), 0, 50));
+
+            String c4[] = {"TOTAL COTIZACIÓN:", "$" + formatoNumero.format(totalTransp + totalEquip + totalWork + totalMater)};
+            doc.add(addFila(getCellsColor3(c4, fontBold2, 1), 0, 50));
+
 
             doc.add(addParagraf("COTIZACIÓN GENERADA CON FECHA "+formatFecha.format(new Date())+" POR: ___________________________", fontBold, 20, 0));
             doc.add(addParagraf("C.C: ___________________________", fontBold, 0, 0));
@@ -224,6 +229,70 @@ public class PdfUtil {
         }
         return null;
     }
+
+    public ArrayList<PdfPCell> getCellsColor2(String[] texts, Font font, int align) {
+        if (texts.length > 0) {
+            ArrayList<PdfPCell> cells = new ArrayList<>();
+
+            // Elegir un color más formal, como un gris oscuro
+           // BaseColor backgroundColor = new BaseColor(169, 169, 169);
+          BaseColor backgroundColor = new BaseColor(173, 216, 230); // Azul Claro
+          BaseColor borderColor = new BaseColor(50, 50, 50); // Color gris oscuro o negro para bordes
+
+            for (String text : texts) {
+                PdfPCell pdfPCell = new PdfPCell(addParagraf(text, font, 0, align));
+
+                // Alinear el contenido
+                pdfPCell.setHorizontalAlignment(align);
+                pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE); // Alineación vertical centrada
+
+                // Colores de fondo y borde
+                pdfPCell.setBackgroundColor(backgroundColor);
+                pdfPCell.setBorderColor(borderColor);
+                pdfPCell.setPadding(5); // Agregar un poco de espacio dentro de la celda para mejorar la estética
+
+                // Ajustes de borde
+                pdfPCell.setBorderWidth(1.2f); // Ancho del borde
+
+                cells.add(pdfPCell);
+            }
+
+            return cells;
+        }
+        return null;
+    }
+
+    public ArrayList<PdfPCell> getCellsColor3(String[] texts, Font font, int align) {
+        if (texts.length > 0) {
+            ArrayList<PdfPCell> cells = new ArrayList<>();
+
+
+            BaseColor backgroundColor = new BaseColor(210, 228, 235); // Azul Claro
+            BaseColor borderColor = new BaseColor(50, 50, 50); // Color gris oscuro o negro para bordes
+
+            for (String text : texts) {
+                PdfPCell pdfPCell = new PdfPCell(addParagraf(text, font, 0, align));
+
+                // Alinear el contenido
+                pdfPCell.setHorizontalAlignment(align);
+                pdfPCell.setVerticalAlignment(Element.ALIGN_MIDDLE); // Alineación vertical centrada
+
+                // Colores de fondo y borde
+                pdfPCell.setBackgroundColor(backgroundColor);
+                pdfPCell.setBorderColor(borderColor);
+                pdfPCell.setPadding(5); // Agregar un poco de espacio dentro de la celda para mejorar la estética
+
+                // Ajustes de borde
+                pdfPCell.setBorderWidth(0.9f); // Ancho del borde
+
+                cells.add(pdfPCell);
+            }
+
+            return cells;
+        }
+        return null;
+    }
+
 
 
 }
