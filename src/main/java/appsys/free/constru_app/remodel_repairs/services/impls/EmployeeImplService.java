@@ -1,6 +1,8 @@
 package appsys.free.constru_app.remodel_repairs.services.impls;
 import appsys.free.constru_app.remodel_repairs.entities.Customer;
 import appsys.free.constru_app.remodel_repairs.entities.Employee;
+import appsys.free.constru_app.remodel_repairs.entities.Requester;
+import appsys.free.constru_app.remodel_repairs.entities.Transport;
 import appsys.free.constru_app.remodel_repairs.repositories.IEmployeeRepo;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IEmployeeService;
 import org.slf4j.Logger;
@@ -34,26 +36,32 @@ public class EmployeeImplService implements IEmployeeService {
     }
 
 
+
     @Transactional
     @Override
-    public boolean updateEmployeee(Employee employee) {
-        Optional<Employee> EmpltUpd=iEmployeeRepo.findById(employee.getId());
-        if(EmpltUpd.isPresent()){
-            EmpltUpd.get().setNames(employee.getNames());
-            EmpltUpd.get().setSurnames(employee.getSurnames());
-            EmpltUpd.get().setDocumentNumber(employee.getDocumentNumber());
-            EmpltUpd.get().setAddress(employee.getAddress());
-            EmpltUpd.get().setEmail(employee.getEmail());
-            EmpltUpd.get().setMunicipality(employee.getMunicipality());
-            EmpltUpd.get().setPhoneNumber(employee.getPhoneNumber());
+    public boolean updateEmployee(Employee employee) {
+        Optional<Employee> EmpltUpd = iEmployeeRepo.findById(employee.getId());
+        if (EmpltUpd.isPresent()) {
+            Employee existingEmployee = EmpltUpd.get();
 
-            EmpltUpd.get().setEnable(employee.isEnable());
+            // Actualizar los campos del empleado
+            existingEmployee.setNames(employee.getNames());
+            existingEmployee.setSurnames(employee.getSurnames());
+            existingEmployee.setDocumentNumber(employee.getDocumentNumber());
+            existingEmployee.setAddress(employee.getAddress());
+            existingEmployee.setEmail(employee.getEmail());
+            existingEmployee.setMunicipality(employee.getMunicipality());
+            existingEmployee.setPhoneNumber(employee.getPhoneNumber());
+            existingEmployee.setEnable(employee.isEnable());
 
-
-            iEmployeeRepo.save(EmpltUpd.get());
+            iEmployeeRepo.save(existingEmployee);  // Guardar los cambios en la BD
+            return true;  // Actualización exitosa
         }
-        return false;
+        return false;  // El empleado no fue encontrado
     }
+
+
+
 
     @Override
     public Employee validNoDoc(String noDoc) {

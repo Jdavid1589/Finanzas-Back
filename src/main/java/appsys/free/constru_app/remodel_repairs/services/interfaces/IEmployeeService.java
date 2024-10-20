@@ -11,7 +11,7 @@ public interface IEmployeeService {
 
     List<Employee> getEmployees(Boolean enable);
 
-    boolean updateEmployeee(Employee employee);
+    boolean updateEmployee(Employee employee);
 
     Employee validNoDoc(String noDoc);
 

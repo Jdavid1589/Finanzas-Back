@@ -3,6 +3,7 @@ package appsys.free.constru_app.remodel_repairs.controllers;
 import appsys.free.constru_app.remodel_repairs.entities.Customer;
 import appsys.free.constru_app.remodel_repairs.entities.Employee;
 
+import appsys.free.constru_app.remodel_repairs.entities.Transport;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IEmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,43 +29,40 @@ public class EmployeeController {
     @PostMapping("/add")
     public ResponseEntity<?> addEmployee(@RequestBody Employee employee) {
         try {
-
             return  new ResponseEntity<Employee>(iEmployeeService.addEmployeee(employee), HttpStatus.OK);
         }catch (Exception e){
             logger.error("ERROR addEmployee "+e.getMessage());
             return   new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
     }
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/listEmp/{enable}")
     public ResponseEntity<?> getEmployees(@PathVariable boolean enable) {
         try {
-
             return  new ResponseEntity<List<Employee>>(iEmployeeService.getEmployees(enable), HttpStatus.OK);
         }catch (Exception e){
             logger.error("ERROR getEmployees "+e.getMessage());
             return   new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
     }
 
     @Secured("ROLE_ADMIN")
-    @PostMapping("updEmp")
-    public ResponseEntity<?> updateEmployee(@RequestBody Employee employee) {
+    @PostMapping("updEmp/{id}")
+    public ResponseEntity<?> updateEmployee(@PathVariable int id, @RequestBody Employee employee) {
         try {
-
-            return new ResponseEntity<Boolean>(iEmployeeService.updateEmployeee(employee),HttpStatus.OK);
-        }catch (Exception e){
-
-            logger.error("ERROR RequesterController.updateTransport "+e.getMessage());
-            return new ResponseEntity<Boolean>(false,HttpStatus.INTERNAL_SERVER_ERROR);
+            employee.setId(id);  // Establecer el ID del empleado
+            boolean isUpdated = iEmployeeService.updateEmployee(employee);
+            return new ResponseEntity<>(isUpdated, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("ERROR RequesterController.updateEmployee: " + e.getMessage());
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
+
+
+
+
 
     @Secured("ROLE_ADMIN")
     @GetMapping("validNoDoc/{noDoc}")
