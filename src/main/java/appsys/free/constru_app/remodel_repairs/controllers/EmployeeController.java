@@ -46,6 +46,16 @@ public class EmployeeController {
             return   new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/listDisabledEmp")
+    public ResponseEntity<?> getDisabledEmployees() {
+        try {
+            return new ResponseEntity<List<Employee>>(iEmployeeService.getDisabledEmployees(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("ERROR getDisabledEmployees " + e.getMessage());
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @Secured("ROLE_ADMIN")
     @PostMapping("updEmp/{id}")
@@ -61,9 +71,6 @@ public class EmployeeController {
     }
 
 
-
-
-
     @Secured("ROLE_ADMIN")
     @GetMapping("validNoDoc/{noDoc}")
     public ResponseEntity<?> validNoDoc(@PathVariable String noDoc) {
@@ -77,6 +84,26 @@ public class EmployeeController {
         }
 
     }
+
+    @Secured("ROLE_ADMIN")
+    @PostMapping("statusEmp/{id}")
+    public ResponseEntity<?> statusEmployee(@PathVariable int id) {
+        try {
+            // Llamar al servicio para cambiar el estado del empleado
+            boolean isUpdated = iEmployeeService.statusEmployee(id);
+            if (isUpdated) {
+                return new ResponseEntity<>(true, HttpStatus.OK); // Estado cambiado exitosamente
+            } else {
+                return new ResponseEntity<>(false, HttpStatus.NOT_FOUND); // Empleado no encontrado
+            }
+        } catch (Exception e) {
+            logger.error("ERROR RequesterController.statusEmployee: " + e.getMessage());
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 
 
 

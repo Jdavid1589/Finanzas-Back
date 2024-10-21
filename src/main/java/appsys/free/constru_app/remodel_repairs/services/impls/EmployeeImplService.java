@@ -1,8 +1,5 @@
 package appsys.free.constru_app.remodel_repairs.services.impls;
-import appsys.free.constru_app.remodel_repairs.entities.Customer;
-import appsys.free.constru_app.remodel_repairs.entities.Employee;
-import appsys.free.constru_app.remodel_repairs.entities.Requester;
-import appsys.free.constru_app.remodel_repairs.entities.Transport;
+import appsys.free.constru_app.remodel_repairs.entities.*;
 import appsys.free.constru_app.remodel_repairs.repositories.IEmployeeRepo;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IEmployeeService;
 import org.slf4j.Logger;
@@ -35,6 +32,11 @@ public class EmployeeImplService implements IEmployeeService {
         return iEmployeeRepo.findByEnable(enable);
     }
 
+    @Override
+    public List<Employee> getDisabledEmployees() {
+        return iEmployeeRepo.findByEnable(false); // Solo devuelve empleados deshabilitados
+    }
+
 
 
     @Transactional
@@ -60,9 +62,6 @@ public class EmployeeImplService implements IEmployeeService {
         return false;  // El empleado no fue encontrado
     }
 
-
-
-
     @Override
     public Employee validNoDoc(String noDoc) {
         Optional<Employee> employee = iEmployeeRepo.findByDocumentNumber(noDoc);
@@ -71,6 +70,23 @@ public class EmployeeImplService implements IEmployeeService {
         }
         return null;
     }
+
+    @Transactional
+    @Override
+    public boolean statusEmployee(int idEmployee) {
+        Optional<Employee> employeeOpt = iEmployeeRepo.findById(idEmployee);
+        if (employeeOpt.isPresent()) {
+            Employee employee = employeeOpt.get();
+
+            // Cambiar el estado de enable
+            employee.setEnable(!employee.isEnable());  // Cambia el estado a su valor opuesto
+
+            iEmployeeRepo.save(employee);  // Guardar los cambios en la BD
+            return true;  // Actualización exitosa
+        }
+        return false;  // El empleado no fue encontrado
+    }
+
 
 
 }

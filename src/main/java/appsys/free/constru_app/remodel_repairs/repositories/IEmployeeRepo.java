@@ -9,9 +9,10 @@ import java.util.Optional;
 
 public interface IEmployeeRepo extends JpaRepository<Employee,Integer> {
 
-   // Optional<Customer> findByDocumentNumber(String documentNumber);
 
     List<Employee> findByEnable(boolean enable);
+    //List<Employee> getDisabledEmployees();
+
 
     Optional<Employee> findByDocumentNumber(String documentNumber);
 }
