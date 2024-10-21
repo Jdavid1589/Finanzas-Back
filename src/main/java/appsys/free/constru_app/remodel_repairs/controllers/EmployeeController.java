@@ -50,12 +50,14 @@ public class EmployeeController {
     @GetMapping("/listDisabledEmp")
     public ResponseEntity<?> getDisabledEmployees() {
         try {
-            return new ResponseEntity<List<Employee>>(iEmployeeService.getDisabledEmployees(), HttpStatus.OK);
+            List<Employee> disabledEmployees = iEmployeeService.getDisabledEmployees(); // Llamamos con 'false'
+            return new ResponseEntity<List<Employee>>(disabledEmployees, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("ERROR getDisabledEmployees " + e.getMessage());
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @Secured("ROLE_ADMIN")
     @PostMapping("updEmp/{id}")

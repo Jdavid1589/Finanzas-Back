@@ -11,7 +11,8 @@ public interface IEmployeeRepo extends JpaRepository<Employee,Integer> {
 
 
     List<Employee> findByEnable(boolean enable);
-    //List<Employee> getDisabledEmployees();
+
+
 
 
     Optional<Employee> findByDocumentNumber(String documentNumber);

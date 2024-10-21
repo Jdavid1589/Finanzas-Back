@@ -34,9 +34,8 @@ public class EmployeeImplService implements IEmployeeService {
 
     @Override
     public List<Employee> getDisabledEmployees() {
-        return iEmployeeRepo.findByEnable(false); // Solo devuelve empleados deshabilitados
+        return iEmployeeRepo.findByEnable(false); // Esto debe devolver empleados con enable = false
     }
-
 
 
     @Transactional
