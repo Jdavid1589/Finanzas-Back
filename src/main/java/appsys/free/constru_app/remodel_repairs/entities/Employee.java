@@ -26,6 +26,10 @@ public class Employee {
     private boolean enable;
     @ManyToOne
     private Municipality municipality;
+    @OneToOne
+    private  ParametersPayroll parametersPayroll;
+
+
 
 
 }

@@ -1,17 +1,18 @@
 package appsys.free.constru_app.remodel_repairs.services.impls;
+import appsys.free.constru_app.remodel_repairs.dtos.Employee_Dto;
 import appsys.free.constru_app.remodel_repairs.entities.*;
 import appsys.free.constru_app.remodel_repairs.repositories.IEmployeeRepo;
+import appsys.free.constru_app.remodel_repairs.repositories.IMunicipalityRepo;
+import appsys.free.constru_app.remodel_repairs.repositories.IParametersRepo;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IEmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Optional;
 
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,12 +21,43 @@ public class EmployeeImplService implements IEmployeeService {
 
     @Autowired
     IEmployeeRepo iEmployeeRepo;
+    @Autowired
+    IMunicipalityRepo iMunicipalityRepo;
+    @Autowired
+    IParametersRepo iParametersRepo;
 
-    @Override
+   /* @Override
     public Employee addEmployeee(Employee employee) {
         return iEmployeeRepo.save(employee);
 
+    }*/
+
+    @Override
+    public Employee addEmployeees(Employee_Dto employeeDto) {
+        Employee employee = new Employee();
+
+        employee.setDocumentNumber(employeeDto.getDocumentNumber());
+        employee.setNames(employeeDto.getNames());
+        employee.setSurnames(employeeDto.getSurnames());
+        employee.setPhoneNumber(employeeDto.getPhoneNumber());
+        employee.setAddress(employeeDto.getAddress());
+        employee.setEmail(employeeDto.getEmail());
+        employee.setEnable(employeeDto.isEnable());
+
+        // Puedes buscar la municipalidad y ParametersPayroll a partir de sus IDs
+        Municipality municipality = iMunicipalityRepo.findById(employeeDto.getIdMunicipality())
+                .orElseThrow(() -> new IllegalArgumentException("Municipality not found"));
+        employee.setMunicipality(municipality);
+
+        ParametersPayroll parametersPayroll = iParametersRepo.findById(employeeDto.getIdParametersPayroll())
+                .orElseThrow(() -> new IllegalArgumentException("ParametersPayroll not found"));
+        employee.setParametersPayroll(parametersPayroll);
+
+        return iEmployeeRepo.save(employee);
     }
+
+
+
 
     @Override
     public List<Employee> getEmployees(Boolean enable) {
@@ -52,6 +84,7 @@ public class EmployeeImplService implements IEmployeeService {
             existingEmployee.setAddress(employee.getAddress());
             existingEmployee.setEmail(employee.getEmail());
             existingEmployee.setMunicipality(employee.getMunicipality());
+            existingEmployee.setParametersPayroll(employee.getParametersPayroll());
             existingEmployee.setPhoneNumber(employee.getPhoneNumber());
             existingEmployee.setEnable(employee.isEnable());
 

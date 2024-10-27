@@ -26,10 +26,12 @@ public class UserApp implements Serializable {
     private String phoneNumber;
     private String noDocument;
     private boolean enable;
+
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name="users_roles", joinColumns= @JoinColumn(name="users_id"),
             inverseJoinColumns=@JoinColumn(name="roles_id"),
             uniqueConstraints= {@UniqueConstraint(columnNames= {"users_id", "roles_id"})})
+
     private List<Rol> roles;
 
 }

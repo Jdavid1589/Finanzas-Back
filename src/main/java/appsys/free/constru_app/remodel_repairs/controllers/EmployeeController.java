@@ -1,9 +1,10 @@
 package appsys.free.constru_app.remodel_repairs.controllers;
 
-import appsys.free.constru_app.remodel_repairs.entities.Customer;
+
+import appsys.free.constru_app.remodel_repairs.dtos.Employee_Dto;
 import appsys.free.constru_app.remodel_repairs.entities.Employee;
 
-import appsys.free.constru_app.remodel_repairs.entities.Transport;
+
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IEmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +28,21 @@ public class EmployeeController {
 
     @Secured("ROLE_ADMIN")
     @PostMapping("/add")
-    public ResponseEntity<?> addEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<?> addEmployees(@RequestBody Employee_Dto employee_dto) {
         try {
-            return  new ResponseEntity<Employee>(iEmployeeService.addEmployeee(employee), HttpStatus.OK);
-        }catch (Exception e){
-            logger.error("ERROR addEmployee "+e.getMessage());
-            return   new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+            Employee result = iEmployeeService.addEmployeees(employee_dto);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error al agregar empleado: " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            logger.error("ERROR addEmployee: " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
 
     @Secured("ROLE_ADMIN")
     @GetMapping("/listEmp/{enable}")
