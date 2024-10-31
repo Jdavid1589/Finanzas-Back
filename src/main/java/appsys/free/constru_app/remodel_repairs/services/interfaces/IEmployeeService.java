@@ -9,15 +9,12 @@ public interface IEmployeeService {
 
     Employee addEmployeees(Employee_Dto employee_dto);
 
-
-
-    //  boolean addEmployeees(HttpServletResponse response, Employee_Dto employee_dto);
-
     List<Employee> getEmployees(Boolean enable);
 
     List<Employee> getDisabledEmployees();
 
     boolean updateEmployee(Employee employee);
+
     boolean statusEmployee(int idEmployee);
 
     Employee validNoDoc(String noDoc);

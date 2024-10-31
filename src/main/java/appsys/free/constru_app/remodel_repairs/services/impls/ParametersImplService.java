@@ -46,6 +46,19 @@ public class ParametersImplService implements IParametersService {
         return false;
     }
 
+    @Transactional
+    @Override
+    public boolean updateSocialSecurityForAll(Integer socialSecurityValue) {
+        List<ParametersPayroll> allParameters = iParametersRepo.findAll();
+        if (!allParameters.isEmpty()) {
+            allParameters.forEach(param -> param.setSocialSecurity(socialSecurityValue));
+            iParametersRepo.saveAll(allParameters);
+            return true;
+        }
+        return false;
+    }
+
+
 
     @Override
     public List<ParametersPayroll> getParameters() {

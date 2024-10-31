@@ -26,11 +26,6 @@ public class EmployeeImplService implements IEmployeeService {
     @Autowired
     IParametersRepo iParametersRepo;
 
-   /* @Override
-    public Employee addEmployeee(Employee employee) {
-        return iEmployeeRepo.save(employee);
-
-    }*/
 
     @Override
     public Employee addEmployeees(Employee_Dto employeeDto) {
@@ -44,7 +39,7 @@ public class EmployeeImplService implements IEmployeeService {
         employee.setEmail(employeeDto.getEmail());
         employee.setEnable(employeeDto.isEnable());
 
-        // Puedes buscar la municipalidad y ParametersPayroll a partir de sus IDs
+        //  buscar la municipality y ParametersPayroll a partir de sus IDs
         Municipality municipality = iMunicipalityRepo.findById(employeeDto.getIdMunicipality())
                 .orElseThrow(() -> new IllegalArgumentException("Municipality not found"));
         employee.setMunicipality(municipality);

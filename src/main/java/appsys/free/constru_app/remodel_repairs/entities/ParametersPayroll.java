@@ -16,17 +16,14 @@ public class ParametersPayroll {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String profile;
     private int suggestedPayroll;
     private int socialSecurity;
 
+
+    /*Constructor */
     public ParametersPayroll(int id) {
         this.id = id;
     }
-
-
-
-
 
 }

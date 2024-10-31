@@ -14,16 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/parameters/")
 @CrossOrigin("*")
 public class ParametersController {
-    private static final Logger logger=  LoggerFactory.getLogger(ParametersController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParametersController.class);
     @Autowired
     IParametersService iParametersService;
-
 
 
     @Secured("ROLE_ADMIN")
@@ -31,45 +32,60 @@ public class ParametersController {
     public ResponseEntity<?> addParameter(@RequestBody ParametersPayroll parameters) {
         try {
             return new ResponseEntity<ParametersPayroll>(iParametersService.addParameter(parameters), HttpStatus.OK);
-        }catch (Exception e){
-            boolean resp= false;
-            logger.error("ERROR ParametersController.add_Parameters "+e.getMessage());
-            return new ResponseEntity<Boolean>(resp,HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            boolean resp = false;
+            logger.error("ERROR ParametersController.add_Parameters " + e.getMessage());
+            return new ResponseEntity<Boolean>(resp, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
-
-
+    /* --- Metody para Actualize Parameters--- */
     @Secured("ROLE_ADMIN")
-    @PostMapping("updParameters")
+    @PostMapping("updParameters") // debe coincidir con la ruta completa
     public ResponseEntity<?> updateParameters(@RequestBody ParametersPayroll parameters) {
         try {
             boolean isUpdated = iParametersService.updateParameters(parameters);
-
             if (isUpdated) {
                 return new ResponseEntity<>(true, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Parametro no encontrado", HttpStatus.NOT_FOUND);
             }
-
         } catch (Exception e) {
             logger.error("ERROR ParametersController.updateParameters: " + e.getMessage());
             return new ResponseEntity<>("Error al actualizar el parámetro", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @Secured("ROLE_ADMIN")
+    @PostMapping("updateSocialSecurityForAll")
+    public ResponseEntity<?> updateSocialSecurityForAll(@RequestBody Map<String, Integer> request) {
+        Integer socialSecurityValue = request.get("socialSecurity");
+        try {
+            boolean isUpdated = iParametersService.updateSocialSecurityForAll(socialSecurityValue);
+            if (isUpdated) {
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("No se encontraron parámetros para actualizar", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            logger.error("ERROR ParametersController.updateSocialSecurityForAll: " + e.getMessage());
+            return new ResponseEntity<>("Error al actualizar el seguro social para todos los parámetros", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
-    // Metodo para Listar Parametros
+
+
+    /* Metody para Listar Parameters*/
     @Secured("ROLE_ADMIN")
     @GetMapping("parameter")
     public ResponseEntity<?> getParameters() {
         try {
-            // Llamar al servicio para obtener todos los parámetros
+            /*  service para oftener todos los parameters */
             List<ParametersPayroll> parametersList = iParametersService.getParameters();
 
-            // Si la lista está vacía, devuelve una respuesta con 404
+            /*  Si la list est vac, devel una prestates con 404*/
             if (parametersList.isEmpty()) {
                 return new ResponseEntity<>("No se encontraron parámetros", HttpStatus.NOT_FOUND);
             }
@@ -86,21 +102,17 @@ public class ParametersController {
     @GetMapping("parameter/{id}")
     public ResponseEntity<?> getParametersById(@PathVariable int id) {
         try {
-            // Llamar al servicio para obtener el trabajo por id
-            ParametersPayroll parameters= iParametersService.getParametersById(id);
-
-            // Si el trabajo no existe, devuelve una respuesta con 404
+            ParametersPayroll parameters = iParametersService.getParametersById(id);
             if (parameters == null) {
-                return new ResponseEntity<String>("Parametro no encontrado", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Parametro no encontrado", HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<ParametersPayroll>(parameters, HttpStatus.OK);
+            // Devolver una lista con un solo elemento
+            return new ResponseEntity<>(Collections.singletonList(parameters), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("ERROR WorkController.getWorkById: " + e.getMessage());
-            return new ResponseEntity<String>("Error al obtener el trabajo", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error al obtener el trabajo", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
 
 

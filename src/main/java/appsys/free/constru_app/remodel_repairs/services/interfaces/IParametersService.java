@@ -17,5 +17,6 @@ public interface IParametersService {
     ParametersPayroll getParametersById(int id);
 
     List<ParametersPayroll> getParameters();
+    boolean updateSocialSecurityForAll(Integer socialSecurityValue);
 
 }
