@@ -22,7 +22,7 @@ public class ConstruAppApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		String passw=passwordEncoder.encode("cap.+45L**");
-		System.out.println(passw);
+		System.out.println("pass: "+passw);
 
 	}
 

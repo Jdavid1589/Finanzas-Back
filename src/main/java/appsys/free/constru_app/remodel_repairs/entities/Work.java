@@ -18,6 +18,7 @@ public class Work {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     private Requester requester;
     private String description;

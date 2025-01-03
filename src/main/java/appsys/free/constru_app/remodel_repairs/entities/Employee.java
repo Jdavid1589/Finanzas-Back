@@ -1,6 +1,7 @@
 package appsys.free.constru_app.remodel_repairs.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -8,6 +9,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+
 @Table(name = "employees")
 public class Employee {
 
@@ -29,7 +32,7 @@ public class Employee {
     @OneToOne
     private  ParametersPayroll parametersPayroll;
 
-
-
-
+    public Employee(int id) {
+        this.id = id;
+    }
 }

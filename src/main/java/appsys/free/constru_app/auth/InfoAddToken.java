@@ -32,7 +32,6 @@ public class InfoAddToken implements TokenEnhancer {
         //info.put("roles", user.getRoles());
         info.put("roles", getRoles(user.getRoles()));
 
-
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(info);
         return accessToken;
     }

@@ -32,6 +32,7 @@ public class Requester {
     private int totalEquipment;
     private int totalTransport;
     private int totalValueRequest;
+
     @Temporal(TemporalType.DATE)
     private Date dateInit;
     @Temporal(TemporalType.DATE)
