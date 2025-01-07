@@ -32,6 +32,7 @@ public class Employee {
     @OneToOne
     private  ParametersPayroll parametersPayroll;
 
+    /*Constructor*/
     public Employee(int id) {
         this.id = id;
     }

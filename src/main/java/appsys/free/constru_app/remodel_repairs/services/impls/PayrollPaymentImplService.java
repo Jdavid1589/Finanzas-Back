@@ -3,8 +3,10 @@ package appsys.free.constru_app.remodel_repairs.services.impls;
 import appsys.free.constru_app.remodel_repairs.entities.Employee;
 import appsys.free.constru_app.remodel_repairs.entities.ParametersPayroll;
 import appsys.free.constru_app.remodel_repairs.entities.PayrollPayment;
+import appsys.free.constru_app.remodel_repairs.entities.TypePayroll;
 import appsys.free.constru_app.remodel_repairs.repositories.IParametersRepo;
 import appsys.free.constru_app.remodel_repairs.repositories.IPayrollPaymentRepo;
+import appsys.free.constru_app.remodel_repairs.responses.PayrollValidationResponse;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IParametersService;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IPayrollPaymentService;
 import org.slf4j.Logger;
@@ -37,17 +39,43 @@ public class PayrollPaymentImplService implements IPayrollPaymentService {
         }
     }
 
-    @Override
+    /*metodo validar ok */
+   /* @Override
     public boolean validNewPayroll(int idEmployed, boolean paymentStatus) {
-        Optional<PayrollPayment> resp=iPayrollPaymentRepo.findByEmployeeAndPaymentStatus(new Employee(idEmployed),paymentStatus);
+        // Buscar el empleado y su estado de pago en la base de datos
+        Optional<PayrollPayment> resp = iPayrollPaymentRepo.findByEmployeeAndPaymentStatus(new Employee(idEmployed), paymentStatus);
 
-        if(resp.isPresent()){
-            if(resp.get().isPaymentStatus()){
+        // Si el registro existe
+        if (resp.isPresent()) {
+            // Si el estado de pago es true, devolver true
+            if (resp.get().isPaymentStatus()) {
                 return true;
             }
+            // Si el estado de pago es false, devolver false
             return false;
         }
+
+        // Si no existe el registro, devolver true para permitir un nuevo registro
         return true;
+    }
+*/
+
+    @Override
+    public PayrollValidationResponse validNewPayroll_(int idEmployed, boolean paymentStatus) {
+        // Buscar el empleado y su estado de pago en la base de datos
+        Optional<PayrollPayment> resp = iPayrollPaymentRepo.findByEmployee(new Employee(idEmployed));
+
+        // Si el registro existe
+        if (resp.isPresent()) {
+            PayrollPayment payrollPayment = resp.get();
+            // Verificar el estado de pago
+            boolean currentPaymentStatus = payrollPayment.isPaymentStatus();
+            int typePayrollId = payrollPayment.getTypePayroll().getId();
+            return new PayrollValidationResponse(currentPaymentStatus, typePayrollId);
+        }
+
+        // Si no existe el registro, devolver true para permitir un nuevo registro
+        return new PayrollValidationResponse(true, 0); // 0 indica que no hay tipo de nómina asociado
     }
 
     @Override
@@ -85,13 +113,12 @@ public class PayrollPaymentImplService implements IPayrollPaymentService {
                 existingPayment.setPaymentStatus(payrollPayment.isPaymentStatus());
                 existingPayment.setTypePayroll(payrollPayment.getTypePayroll());
                 existingPayment.setAccumulatedAmount(payrollPayment.getAccumulatedAmount());
-                existingPayment.setSubTotal(payrollPayment.getSubTotal());
-                existingPayment.setSubTotalSecureSocial(payrollPayment.getSubTotalSecureSocial());
-                existingPayment.setNumberOvertime(payrollPayment.getNumberOvertime());
-                existingPayment.setNumberFestiveHours(payrollPayment.getNumberFestiveHours());
-                existingPayment.setUnitValue(payrollPayment.getUnitValue());
-                existingPayment.setValueOvertime(payrollPayment.getValueOvertime());
-                existingPayment.setValueFestiveHour(payrollPayment.getValueFestiveHour());  // 13
+                existingPayment.setTotal_accumulatedAmount(payrollPayment.getTotal_accumulatedAmount());
+                existingPayment.setTotal_SecureSocial(payrollPayment.getTotal_SecureSocial());
+                existingPayment.setTotal_numberOvertime(payrollPayment.getTotal_Overtime());
+                existingPayment.setTotal_numberFestiveHours(payrollPayment.getTotal_numberFestiveHours());
+                existingPayment.setTotal_Overtime(payrollPayment.getTotal_Overtime());
+                existingPayment.setTotal_FestiveHours(payrollPayment.getTotal_FestiveHours());  // 12
 
                 // Guardar la entidad actualizada en la base de datos
                 iPayrollPaymentRepo.save(existingPayment);

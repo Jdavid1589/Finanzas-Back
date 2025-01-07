@@ -19,17 +19,22 @@ public class PayrollHistory {
     @Temporal(TemporalType.DATE)
     private Date date;
 
-  //  @Column(precision = 10, scale = 2, nullable = false) // Cantidad Acumulada
-    // private BigDecimal accumulatedAmount;
-    private int amountTypePayroll; //Cantidad Tipo Nomina
-
-    private int numberOvertime;          // Cantidad Horas Extras
-    private int numberFestiveHours;     //  Cantidad Horas Festivas
+    private int amountTypePayroll;      // Cantidad Tipo Nomina
+    private int numberOvertime;         // Cantidad horas Extras
+    private int numberFestiveHours;     // Cantidad Horas Festivas
+    private int unitValueOrdinary;      // Valor Hora Ordinaria $
+    private int unitValueOvertime;      // Valor Hora Extra $
+    private int unitValueFestive;       // Valor Hora Festiva $
+    private int subTotal_OrdinaryHours; // Sub Total Valor Hora Ordinaria $
+    private int subTotal_FestiveHours;  // Sub Total Valor Hora Festiva $
+    private int subTotal_OvertimeHours;  // Sub Total Valor Hora Extra  $
 
 
     @ManyToOne
    @JoinColumn(name = "payrollPayment_id") // Esto define la clave foránea
     private PayrollPayment payrollPayment;
+
+
 
 
 

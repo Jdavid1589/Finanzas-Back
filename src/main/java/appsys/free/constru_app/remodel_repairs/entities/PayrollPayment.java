@@ -17,33 +17,27 @@ public class PayrollPayment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateInit;
-
-    @Temporal(TemporalType.DATE)
-    private Date dateEnd;
-
-    private boolean paymentStatus;       // Estado de Pago
-
-    // @Column(precision = 10, scale = 2, nullable = false)  Cantidad Acumulada
-    // private BigDecimal accumulatedAmount;
-    private int accumulatedAmount;
-
-    private int unitValue;
-    private int subTotal;
-    private int subTotalSecureSocial;
-    private int numberOvertime;          // Cantidad Horas Extras
-    private int numberFestiveHours;     //  Cantidad Horas Festivas
-    private int valueOvertime;         //   Valor Hora Extra
-    private int valueFestiveHour ;    //    Valor Hora Festiva
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
     @ManyToOne
     @JoinColumn(name = "typePayroll_id") // Esto define la clave foránea
     private TypePayroll typePayroll;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id") // Esto define la clave foránea
-    private Employee employee;
+    @Temporal(TemporalType.DATE)
+    private Date dateInit;
+    @Temporal(TemporalType.DATE)
+    private Date dateEnd;
+    private boolean paymentStatus;           // Estado de Pago
+    private int accumulatedAmount;          // Cantidad Acumulada  (nominas)
+    private int total_accumulatedAmount;    // Total Costos Acumlados $
+    private int total_SecureSocial;         // Total Costos Seguridad Social Acumlada $
+    private int total_numberFestiveHours;   // Total Cantidad Horas Festivas
+    private int total_numberOvertime;       // Total Cantidad Horas Extras
+    private int total_Overtime;             // Total Costos Horas Extras
+    private int total_FestiveHours;         // Total Costos Horas Festivas
+
 
 
 

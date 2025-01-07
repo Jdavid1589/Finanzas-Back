@@ -13,5 +13,10 @@ public interface IPayrollPaymentRepo extends JpaRepository<PayrollPayment,Intege
 
    // List<PayrollPayment> findByEnable(boolean paymentStatus);
 
-    Optional<PayrollPayment> findByEmployeeAndPaymentStatus(Employee employee, boolean paymentStatus);
+
+    //Optional<PayrollPayment> findByEmployeeAndPaymentStatus(Employee employee, boolean paymentStatus);
+    Optional<PayrollPayment> findByEmployee(Employee employee);
+
+
+
 }

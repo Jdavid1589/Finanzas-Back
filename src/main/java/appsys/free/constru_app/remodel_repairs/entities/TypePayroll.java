@@ -21,4 +21,5 @@ public class TypePayroll implements Serializable {
         this.id = id;
     }
 
+
 }

@@ -5,6 +5,7 @@ import appsys.free.constru_app.remodel_repairs.dtos.Employee_Dto;
 import appsys.free.constru_app.remodel_repairs.entities.Employee;
 import appsys.free.constru_app.remodel_repairs.entities.PayrollPayment;
 
+import appsys.free.constru_app.remodel_repairs.responses.PayrollValidationResponse;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IPayrollPaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,14 +101,20 @@ public class PayrollPaymentController {
         }
     }
 
+
+
     @Secured("ROLE_ADMIN")
-    @GetMapping("/valiNewPay/{idEmpl}/{status}")
-    public ResponseEntity<?> validNewPayroll(@PathVariable int idEmpl, @PathVariable boolean status) {
+    @GetMapping("/validateNewPay_/{idEmpl}/{status}")
+    public ResponseEntity<PayrollValidationResponse> validNewPayroll_(
+            @PathVariable int idEmpl,
+            @PathVariable boolean status) {
         try {
-            return ResponseEntity.ok(iPayrollPaymentService.validNewPayroll(idEmpl,status));
+            PayrollValidationResponse result = iPayrollPaymentService.validNewPayroll_(idEmpl, status);
+            logger.info("Payroll status for employee {}: {}", idEmpl, result);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
-            logger.error("Error PayrollPaymentController.validNewPayroll: " + e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Error PayrollPaymentController.validNewPayroll: " + e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
