@@ -2,6 +2,7 @@ package appsys.free.constru_app.remodel_repairs.controllers;
 
 
 import appsys.free.constru_app.remodel_repairs.dtos.Employee_Dto;
+import appsys.free.constru_app.remodel_repairs.dtos.PayrollValidationDto;
 import appsys.free.constru_app.remodel_repairs.entities.Employee;
 import appsys.free.constru_app.remodel_repairs.entities.PayrollPayment;
 
@@ -101,22 +102,31 @@ public class PayrollPaymentController {
         }
     }
 
-
-
+    /*Metody para validator el Employee y Status*/
+    // Método protegido por el rol "ROLE_ADMIN"
     @Secured("ROLE_ADMIN")
-    @GetMapping("/validateNewPay_/{idEmpl}/{status}")
-    public ResponseEntity<PayrollValidationResponse> validNewPayroll_(
+    @GetMapping("/validateNewPay/{idEmpl}/{status}")
+    public ResponseEntity<PayrollValidationDto> validNewPayroll_(
             @PathVariable int idEmpl,
             @PathVariable boolean status) {
         try {
-            PayrollValidationResponse result = iPayrollPaymentService.validNewPayroll_(idEmpl, status);
+            // Llamada al servicio para validar la nómina del empleado
+            PayrollValidationDto result = iPayrollPaymentService.validNewPayroll(idEmpl, status);
+
+            // Log de información con el estado de la nómina
             logger.info("Payroll status for employee {}: {}", idEmpl, result);
+
+            // Devolver una respuesta OK con el resultado de la validación
             return ResponseEntity.ok(result);
         } catch (Exception e) {
+            // Log de error si ocurre una excepción
             logger.error("Error PayrollPaymentController.validNewPayroll: " + e.getMessage(), e);
+
+            // Devolver una respuesta de error interno del servidor
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 }

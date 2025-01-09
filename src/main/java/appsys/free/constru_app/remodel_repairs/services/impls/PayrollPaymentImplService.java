@@ -1,5 +1,6 @@
 package appsys.free.constru_app.remodel_repairs.services.impls;
 
+import appsys.free.constru_app.remodel_repairs.dtos.PayrollValidationDto;
 import appsys.free.constru_app.remodel_repairs.entities.Employee;
 import appsys.free.constru_app.remodel_repairs.entities.ParametersPayroll;
 import appsys.free.constru_app.remodel_repairs.entities.PayrollPayment;
@@ -12,6 +13,9 @@ import appsys.free.constru_app.remodel_repairs.services.interfaces.IPayrollPayme
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,43 +43,32 @@ public class PayrollPaymentImplService implements IPayrollPaymentService {
         }
     }
 
-    /*metodo validar ok */
-   /* @Override
-    public boolean validNewPayroll(int idEmployed, boolean paymentStatus) {
-        // Buscar el empleado y su estado de pago en la base de datos
-        Optional<PayrollPayment> resp = iPayrollPaymentRepo.findByEmployeeAndPaymentStatus(new Employee(idEmployed), paymentStatus);
-
-        // Si el registro existe
-        if (resp.isPresent()) {
-            // Si el estado de pago es true, devolver true
-            if (resp.get().isPaymentStatus()) {
-                return true;
-            }
-            // Si el estado de pago es false, devolver false
-            return false;
-        }
-
-        // Si no existe el registro, devolver true para permitir un nuevo registro
-        return true;
-    }
-*/
 
     @Override
-    public PayrollValidationResponse validNewPayroll_(int idEmployed, boolean paymentStatus) {
-        // Buscar el empleado y su estado de pago en la base de datos
-        Optional<PayrollPayment> resp = iPayrollPaymentRepo.findByEmployee(new Employee(idEmployed));
+    public PayrollValidationDto validNewPayroll(int idEmployed, boolean paymentStatus) {
+        // Crear un objeto Pageable para obtener solo el primer elemento (página 0, tamaño 1)
+        Pageable pageable = PageRequest.of(0, 1);
 
-        // Si el registro existe
-        if (resp.isPresent()) {
-            PayrollPayment payrollPayment = resp.get();
-            // Verificar el estado de pago
+        // Obtener una página de PayrollPayment ordenada por id en orden descendente para el empleado dado
+        Page<PayrollPayment> payrollPayments = iPayrollPaymentRepo.findByEmployeeIdOrderByIdDesc(idEmployed, pageable);
+
+        // Verificar si la página contiene algún elemento
+        if (payrollPayments.hasContent()) {
+            // Obtener el primer PayrollPayment de la lista
+            PayrollPayment payrollPayment = payrollPayments.getContent().get(0);
+
+            // Obtener el estado de pago actual del PayrollPayment
             boolean currentPaymentStatus = payrollPayment.isPaymentStatus();
+
+            // Obtener el id del tipo de nómina del PayrollPayment
             int typePayrollId = payrollPayment.getTypePayroll().getId();
-            return new PayrollValidationResponse(currentPaymentStatus, typePayrollId);
+
+            // Devolver un nuevo objeto PayrollValidationDto con el estado de pago actual y el id del tipo de nómina
+            return new PayrollValidationDto(currentPaymentStatus, typePayrollId);
         }
 
-        // Si no existe el registro, devolver true para permitir un nuevo registro
-        return new PayrollValidationResponse(true, 0); // 0 indica que no hay tipo de nómina asociado
+        // Si no se encuentra ningún PayrollPayment, devolver un DTO con valores predeterminados
+        return new PayrollValidationDto(true, 0);
     }
 
     @Override
