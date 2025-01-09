@@ -1,12 +1,9 @@
 package appsys.free.constru_app.remodel_repairs.controllers;
 
 
-import appsys.free.constru_app.remodel_repairs.dtos.Employee_Dto;
-import appsys.free.constru_app.remodel_repairs.dtos.PayrollValidationDto;
-import appsys.free.constru_app.remodel_repairs.entities.Employee;
-import appsys.free.constru_app.remodel_repairs.entities.PayrollPayment;
 
-import appsys.free.constru_app.remodel_repairs.responses.PayrollValidationResponse;
+import appsys.free.constru_app.remodel_repairs.dtos.PayrollValidationDto;
+import appsys.free.constru_app.remodel_repairs.entities.PayrollPayment;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IPayrollPaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +59,6 @@ public class PayrollPaymentController {
             return new ResponseEntity<>("Error al actualizar el Pago", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
     /* Metody para Listar Parameters*/
     @Secured("ROLE_ADMIN")

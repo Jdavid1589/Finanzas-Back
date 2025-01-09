@@ -1,14 +1,8 @@
 package appsys.free.constru_app.remodel_repairs.services.impls;
 
 import appsys.free.constru_app.remodel_repairs.dtos.PayrollValidationDto;
-import appsys.free.constru_app.remodel_repairs.entities.Employee;
-import appsys.free.constru_app.remodel_repairs.entities.ParametersPayroll;
 import appsys.free.constru_app.remodel_repairs.entities.PayrollPayment;
-import appsys.free.constru_app.remodel_repairs.entities.TypePayroll;
-import appsys.free.constru_app.remodel_repairs.repositories.IParametersRepo;
-import appsys.free.constru_app.remodel_repairs.repositories.IPayrollPaymentRepo;
-import appsys.free.constru_app.remodel_repairs.responses.PayrollValidationResponse;
-import appsys.free.constru_app.remodel_repairs.services.interfaces.IParametersService;
+import appsys.free.constru_app.remodel_repairs.repositories.IPayrollPaymentRepo;;
 import appsys.free.constru_app.remodel_repairs.services.interfaces.IPayrollPaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.swing.text.html.Option;
 import java.util.Collections;
@@ -42,7 +36,6 @@ public class PayrollPaymentImplService implements IPayrollPaymentService {
             return Collections.emptyList(); // Devolver una lista vacía en caso de error
         }
     }
-
 
     @Override
     public PayrollValidationDto validNewPayroll(int idEmployed, boolean paymentStatus) {
