@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: constru-app
+    name: Finanzas
     env: java
     buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/constru_app-0.0.1-SNAPSHOT.jar
+    startCommand: java -jar target/finanzas_app-0.0.1-SNAPSHOT.jar
     plan: free
     envVars:
       - key: DB_URL
