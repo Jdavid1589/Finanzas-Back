@@ -20,6 +20,6 @@ WORKDIR /app
 COPY --from=build /app/target/finanzas_app-0.0.1-SNAPSHOT.jar app.jar
 
 # Exponer puerto (informativo)
-EXPOSE 7018
+EXPOSE 8081
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
